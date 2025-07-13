@@ -1,6 +1,10 @@
--e .
+# Commenting `-e .`, temporarily as we don't want to create a new version of Project Package everytime we install a new dependency.
+# -e .
 pandas
 numpy
 matplotlib
 seaborn
 scikit-learn
+catboost
+xgboost
+Flask
