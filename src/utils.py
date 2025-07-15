@@ -1,0 +1,20 @@
+import dill
+import os, sys
+import numpy as np
+import pandas as pd
+from src.exception import CustomException
+
+
+def save_object(file_path, obj):
+    """
+    Stores the Object (obj) such as Model, Pipelines, etc to the specified file_path.
+    """
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+
+        with open(file_path, "wb") as f:
+            dill.dump(obj, f)
+
+    except Exception as e:
+        raise CustomException(e, sys)

@@ -1,9 +1,10 @@
 import os, sys
-from src.exception import CustomException
-from src.logger import logging
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from src.logger import logging
 from dataclasses import dataclass
+from src.exception import CustomException
+from sklearn.model_selection import train_test_split
+from src.components.data_transformation import DataTransformation
 
 
 @dataclass
@@ -14,14 +15,12 @@ class DataIngestionConfig:
 
 
 class DataIngestion:
-
-
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
     
 
     def initiate_data_ingestion(self):
-        logging.info("Entered the Data Ingestion Component.")
+        logging.info("Data Ingestion - Start")
         try:
             df = pd.read_csv("notebooks/data/stud.csv")
             logging.info("Data Reading - Complete")
@@ -44,5 +43,8 @@ class DataIngestion:
 
 
 if __name__ == "__main__":
-    obj = DataIngestion()
-    train_data, test_data = obj.initiate_data_ingestion()
+    data_ingestion_obj = DataIngestion()
+    train_path, test_path = data_ingestion_obj.initiate_data_ingestion()
+
+    data_transformation_obj = DataTransformation()
+    train_array, test_array, data_preprocessor_obj_file_path = data_transformation_obj.initiate_data_transformation(train_path, test_path)
