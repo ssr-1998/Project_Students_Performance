@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from src.exception import CustomException
 from sklearn.model_selection import train_test_split
 from src.components.data_transformation import DataTransformation
+from src.components.model_training import ModelTrainer
 
 
 @dataclass
@@ -47,4 +48,7 @@ if __name__ == "__main__":
     train_path, test_path = data_ingestion_obj.initiate_data_ingestion()
 
     data_transformation_obj = DataTransformation()
-    train_array, test_array, data_preprocessor_obj_file_path = data_transformation_obj.initiate_data_transformation(train_path, test_path)
+    train_array, test_array = data_transformation_obj.initiate_data_transformation(train_path, test_path)
+
+    model_training_obj = ModelTrainer()
+    best_model_score = model_training_obj.initiate_model_training(train_array, test_array)
