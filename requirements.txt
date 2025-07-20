@@ -9,3 +9,4 @@ catboost
 xgboost
 Flask
 dill
+pyyaml

@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, yaml
 from src.logger import logging
 from xgboost import XGBRegressor
 from dataclasses import dataclass
@@ -13,12 +13,22 @@ from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientB
 
 @dataclass
 class ModelTrainerConfig:
-    trained_model_file_path = os.path.join("artifacts", "model.pkl")
+    trained_model_file_path = os.path.join("artifacts", "model.pkl")  # PATH for Model's Pickle File
+    params_file_path = os.path.join("src", "model_params.yaml")  # PATH to YAML File
 
 
 class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
+    
+
+
+    def load_model_params(self, file_path: str):
+        """This Function loads the Hyper-parameters for each Model from a YAML File"""
+        with open(file_path, "r") as file:
+            params = yaml.safe_load(file)
+        
+        return params["hyperparameters"]
     
 
     def initiate_model_training(self, train_array, test_array):
@@ -43,6 +53,8 @@ class ModelTrainer:
                 "AdaBoost Regressor": AdaBoostRegressor()
             }
 
+            params = self.load_model_params(file_path=self.model_trainer_config.params_file_path)
+
             logging.info("Training & Evaluating Models")
 
             models_report, models_fitted = evaluate_models(
@@ -50,7 +62,8 @@ class ModelTrainer:
                 y_train = y_train, 
                 X_test = X_test, 
                 y_test = y_test, 
-                models = models
+                models = models, 
+                params = params
             )
 
             best_model_score = max(list(models_report.values()))
@@ -76,6 +89,7 @@ class ModelTrainer:
                 obj=best_model
             )
 
+            logging.info("Model Training - Start")
             logging.info(
                 "Best Model Saved at {}".format(
                     self.model_trainer_config.trained_model_file_path
